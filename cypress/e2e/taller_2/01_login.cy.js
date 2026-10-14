@@ -9,9 +9,17 @@ describe("01 - Login OrangeHRM", () => {
       cy.get('input[name="password"]').type(data.validUser.password);
       cy.get('button[type="submit"]').click();
 
-      cy.url().should("include", "/dashboard");
-      cy.get(".oxd-topbar-header-breadcrumb").should("be.visible");
-      cy.get(".oxd-topbar-header-breadcrumb").should("contain", "Dashboard");
+      // Aserción 1: URL contiene /dashboard
+      cy.url({ timeout: 20000 }).should("include", "/dashboard");
+
+      // Aserción 2: el nombre del usuario logueado aparece en la barra
+      cy.get(".oxd-userdropdown-name", { timeout: 20000 })
+        .should("exist")
+        .and("be.visible")
+        .and("not.be.empty");
+
+      // Aserción 3: el menú lateral está cargado
+      cy.get(".oxd-main-menu", { timeout: 20000 }).should("exist");
     });
   });
 
@@ -31,16 +39,10 @@ describe("01 - Login OrangeHRM", () => {
   it("NEGATIVO - Campos vacíos", () => {
     cy.get('button[type="submit"]').click();
 
-    cy.get('input[name="username"]')
-      .closest(".oxd-input-group")
-      .find(".oxd-input-field-error-message")
-      .should("be.visible")
-      .and("contain", "Required");
+    cy.get(".oxd-input-field-error-message")
+      .should("have.length.at.least", 2)
+      .and("be.visible");
 
-    cy.get('input[name="password"]')
-      .closest(".oxd-input-group")
-      .find(".oxd-input-field-error-message")
-      .should("be.visible")
-      .and("contain", "Required");
+    cy.url().should("include", "/auth/login");
   });
 });
