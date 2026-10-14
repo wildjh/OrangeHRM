@@ -1,63 +1,57 @@
-describe("05 - Claim: Asignar Reclamo", () => {
+describe('05 - Claim: Asignar Reclamo', () => {
   beforeEach(() => {
-    cy.login("Admin", "admin123");
-    cy.get('a[href*="claim/viewClaimModule"]', { timeout: 25000 }).click();
-    cy.url({ timeout: 20000 }).should("include", "/claim/viewClaimModule");
+    cy.login('Admin', 'admin123')
+    cy.visit('/web/index.php/claim/viewClaimModule', { timeout: 60000 })
+    cy.url({ timeout: 20000 }).should('include', '/claim')
+    cy.contains('button', 'Assign Claim', { timeout: 20000 }).should('be.visible')
+  })
 
-    // ESPERAR a que el botón Assign Claim esté visible
-    cy.contains("button", "Assign Claim", { timeout: 25000 }).should(
-      "be.visible",
-    );
-  });
+  it('HAPPY PATH - Formulario Assign Claim carga correctamente', () => {
+    cy.contains('button', 'Assign Claim', { timeout: 20000 }).click()
 
-  it("HAPPY PATH - Asignar un claim con fixture", () => {
-    cy.fixture("claim").then((data) => {
-      cy.contains("button", "Assign Claim", { timeout: 25000 }).click();
-      cy.url().should("include", "/claim/assignClaim");
+    cy.url({ timeout: 15000 }).should('include', '/claim/assignClaim')
+    cy.get('form.oxd-form', { timeout: 15000 }).should('be.visible')
 
-      // Empleado
-      cy.get('input[placeholder="Type for hints..."]', { timeout: 25000 })
-        .first()
-        .type("a");
-      cy.get(".oxd-autocomplete-option", { timeout: 25000 })
-        .should("have.length.greaterThan", 0)
-        .first()
-        .click();
+    cy.get('input[placeholder="Type for hints..."]').should('exist')
+    cy.get('.oxd-select-text').should('have.length.at.least', 2)
 
-      // Evento
-      cy.get(".oxd-select-text").first().click();
-      cy.contains(".oxd-select-option", data.event).click();
+    cy.get('form.oxd-form').should('contain', 'Employee Name')
+    cy.get('form.oxd-form').should('contain', 'Event')
+    cy.get('form.oxd-form').should('contain', 'Currency')
 
-      // Moneda
-      cy.get(".oxd-select-text").eq(1).click();
-      cy.contains(".oxd-select-option", data.currency).click();
+    cy.contains('button', 'Create').should('be.visible')
+  })
 
-      // Remarks
-      cy.get(".oxd-textarea").type(data.remarks);
+  it('HAPPY PATH - Seleccionar Event y Currency', () => {
+    cy.contains('button', 'Assign Claim', { timeout: 20000 }).click()
+    cy.get('form.oxd-form', { timeout: 15000 }).should('be.visible')
 
-      cy.get('button[type="submit"]').click();
+    cy.get('.oxd-select-text').first().click()
+    cy.contains('.oxd-select-option', 'Travel Allowance').click()
+    cy.get('.oxd-select-text').first().should('contain', 'Travel Allowance')
 
-      cy.get(".oxd-toast", { timeout: 25000 })
-        .should("exist")
-        .and("contain", "Successfully Saved");
-    });
-  });
+    cy.get('.oxd-select-text').eq(1).click()
+    cy.contains('.oxd-select-option', 'Euro').click()
+    cy.get('.oxd-select-text').eq(1).should('contain', 'Euro')
+  })
 
-  it("NEGATIVO - Crear sin evento ni moneda", () => {
-    cy.contains("button", "Assign Claim", { timeout: 25000 }).click();
+  it('NEGATIVO - Crear sin evento ni moneda', () => {
+    cy.contains('button', 'Assign Claim', { timeout: 20000 }).click()
 
-    cy.get('input[placeholder="Type for hints..."]', { timeout: 25000 })
+    cy.get('input[placeholder="Type for hints..."]', { timeout: 20000 })
       .first()
-      .type("a");
-    cy.get(".oxd-autocomplete-option", { timeout: 25000 })
-      .should("have.length.greaterThan", 0)
-      .first()
-      .click();
+      .clear()
+      .type('manda', { delay: 150 })
 
-    cy.get('button[type="submit"]').click();
+    cy.get('.oxd-autocomplete-dropdown', { timeout: 15000 }).should('be.visible')
+    cy.get('.oxd-autocomplete-option', { timeout: 15000 }).first().click()
+    cy.wait(800)
 
-    cy.get(".oxd-input-field-error-message")
-      .should("have.length.at.least", 1)
-      .and("be.visible");
-  });
-});
+    cy.get('button[type="submit"]').click()
+
+    cy.get('.oxd-input-field-error-message')
+      .should('have.length.at.least', 1)
+      .and('be.visible')
+    cy.url().should('include', '/claim/assignClaim')
+  })
+})

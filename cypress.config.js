@@ -8,7 +8,7 @@ module.exports = defineConfig({
     viewportWidth: 1366,
     viewportHeight: 768,
     defaultCommandTimeout: 15000,
-    pageLoadTimeout: 120000, // ← subido a 2 minutos
+    pageLoadTimeout: 120000,
   },
   component: {
     supportFile: false,
