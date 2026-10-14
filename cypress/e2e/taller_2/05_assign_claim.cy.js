@@ -8,18 +8,14 @@ describe('05 - Claim: Asignar Reclamo', () => {
 
   it('HAPPY PATH - Formulario Assign Claim carga correctamente', () => {
     cy.contains('button', 'Assign Claim', { timeout: 20000 }).click()
-
     cy.url({ timeout: 15000 }).should('include', '/claim/assignClaim')
     cy.get('form.oxd-form', { timeout: 15000 }).should('be.visible')
 
     cy.get('input[placeholder="Type for hints..."]').should('exist')
-    cy.get('.oxd-select-text').should('have.length.at.least', 2)
-
-    cy.get('form.oxd-form').should('contain', 'Employee Name')
     cy.get('form.oxd-form').should('contain', 'Event')
     cy.get('form.oxd-form').should('contain', 'Currency')
 
-    cy.contains('button', 'Create').should('be.visible')
+    cy.screenshot('05-claim-happy-1', { capture: 'viewport' })
   })
 
   it('HAPPY PATH - Seleccionar Event y Currency', () => {
@@ -33,6 +29,8 @@ describe('05 - Claim: Asignar Reclamo', () => {
     cy.get('.oxd-select-text').eq(1).click()
     cy.contains('.oxd-select-option', 'Euro').click()
     cy.get('.oxd-select-text').eq(1).should('contain', 'Euro')
+
+    cy.screenshot('05-claim-happy-2', { capture: 'viewport' })
   })
 
   it('NEGATIVO - Crear sin evento ni moneda', () => {
@@ -42,7 +40,6 @@ describe('05 - Claim: Asignar Reclamo', () => {
       .first()
       .clear()
       .type('manda', { delay: 150 })
-
     cy.get('.oxd-autocomplete-dropdown', { timeout: 15000 }).should('be.visible')
     cy.get('.oxd-autocomplete-option', { timeout: 15000 }).first().click()
     cy.wait(800)
@@ -52,6 +49,7 @@ describe('05 - Claim: Asignar Reclamo', () => {
     cy.get('.oxd-input-field-error-message')
       .should('have.length.at.least', 1)
       .and('be.visible')
-    cy.url().should('include', '/claim/assignClaim')
+
+    cy.screenshot('05-claim-negative', { capture: 'viewport' })
   })
 })

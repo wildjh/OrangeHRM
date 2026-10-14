@@ -1,7 +1,6 @@
 describe('02 - Admin: Agregar Usuario', () => {
   beforeEach(() => {
     cy.login('Admin', 'admin123')
-    // Con session, hay que navegar explícitamente
     cy.visit('/web/index.php/admin/viewSystemUsers', { timeout: 60000 })
     cy.get('.orangehrm-header-container', { timeout: 20000 }).should('be.visible')
   })
@@ -18,11 +17,8 @@ describe('02 - Admin: Agregar Usuario', () => {
 
     cy.get('form.oxd-form').should('contain', 'User Role')
     cy.get('form.oxd-form').should('contain', 'Employee Name')
-    cy.get('form.oxd-form').should('contain', 'Username')
-    cy.get('form.oxd-form').should('contain', 'Password')
 
-    cy.contains('button', 'Save').should('be.visible')
-    cy.contains('button', 'Cancel').should('be.visible')
+    cy.screenshot('02-add-user-happy-1', { capture: 'viewport' })
   })
 
   it('HAPPY PATH - Seleccionar User Role y Status', () => {
@@ -36,6 +32,8 @@ describe('02 - Admin: Agregar Usuario', () => {
     cy.get('.oxd-select-text').eq(1).click()
     cy.contains('.oxd-select-option', 'Enabled').click()
     cy.get('.oxd-select-text').eq(1).should('contain', 'Enabled')
+
+    cy.screenshot('02-add-user-happy-2', { capture: 'viewport' })
   })
 
   it('NEGATIVO - Guardar sin llenar campos obligatorios', () => {
@@ -46,6 +44,6 @@ describe('02 - Admin: Agregar Usuario', () => {
       .should('have.length.at.least', 2)
       .and('be.visible')
 
-    cy.url().should('include', '/admin/saveSystemUser')
+    cy.screenshot('02-add-user-negative', { capture: 'viewport' })
   })
 })

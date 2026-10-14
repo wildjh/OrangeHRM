@@ -14,6 +14,8 @@ describe("01 - Login OrangeHRM", () => {
       cy.get(".oxd-topbar-header-breadcrumb-module", { timeout: 10000 })
         .should("be.visible")
         .and("contain", "Dashboard");
+
+      cy.screenshot("01-login-happy-path", { capture: "viewport" });
     });
   });
 
@@ -27,6 +29,8 @@ describe("01 - Login OrangeHRM", () => {
         .should("exist")
         .and("be.visible")
         .and("contain", "Invalid credentials");
+
+      cy.screenshot("01-login-negative-password", { capture: "viewport" });
     });
   });
 
@@ -44,5 +48,7 @@ describe("01 - Login OrangeHRM", () => {
       .find(".oxd-input-field-error-message")
       .should("be.visible")
       .and("contain", "Required");
+
+    cy.screenshot("01-login-negative-empty", { capture: "viewport" });
   });
 });

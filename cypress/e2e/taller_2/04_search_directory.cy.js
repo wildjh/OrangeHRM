@@ -19,17 +19,26 @@ describe('04 - Directory: Buscar Empleado', () => {
     cy.get('.orangehrm-directory-card', { timeout: 20000 }).should('exist')
     cy.get('.orangehrm-directory-card').should('have.length.at.least', 1)
     cy.get('.orangehrm-directory-card').first().should('be.visible')
+
+    cy.screenshot('04-directory-happy-path', { capture: 'viewport' })
   })
 
-  it('NEGATIVO - Empleado inexistente no aparece en el autocomplete', () => {
+  it('NEGATIVO - Búsqueda sin seleccionar empleado válido', () => {
+    // Escribir un texto SIN seleccionar del autocomplete
     cy.get('input[placeholder="Type for hints..."]', { timeout: 20000 })
       .clear()
       .type('zzzznoexiste', { delay: 100 })
 
-    // El autocomplete no debe mostrar opciones para un nombre que no existe
-    cy.get('.oxd-autocomplete-option').should('not.exist')
+    // Intentar buscar sin haber seleccionado una opción del dropdown
+    cy.get('button[type="submit"]').click()
 
-    // Y seguimos en Directory
+    // Aserción 1: el input sigue con el texto (no se vinculó a un empleado)
+    cy.get('input[placeholder="Type for hints..."]')
+      .should('have.value', 'zzzznoexiste')
+
+    // Aserción 2: la URL no cambió (no navegó a resultados filtrados)
     cy.url().should('include', '/directory/viewDirectory')
+
+    cy.screenshot('04-directory-negative', { capture: 'viewport' })
   })
 })

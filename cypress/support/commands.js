@@ -12,10 +12,16 @@ Cypress.Commands.add('login', (username, password) => {
 })
 
 Cypress.Commands.add('addEmployee', (firstName, lastName) => {
-  cy.get('a[href*="pim/viewPimModule"]', { timeout: 20000 }).click()
-  cy.contains('a', 'Add Employee').click()
-  cy.get('input[name="firstName"]', { timeout: 20000 }).should('be.visible').type(firstName)
-  cy.get('input[name="lastName"]').should('be.visible').type(lastName)
-  cy.get('button[type="submit"]').click()
-  cy.contains('Successfully Saved', { timeout: 20000 }).should('be.visible')
+  // Visitar directo PIM Add Employee (sin click que dispare pageLoad masivo)
+  cy.visit('/web/index.php/pim/addEmployee', { timeout: 120000 })
+  cy.get('form.oxd-form', { timeout: 30000 }).should('be.visible')
+
+  cy.get('input[name="firstName"]', { timeout: 20000 }).should('be.visible').clear().type(firstName)
+  cy.get('input[name="lastName"]').should('be.visible').clear().type(lastName)
+
+  // Esperar que el botón Save esté habilitado y clickear
+  cy.get('button[type="submit"]', { timeout: 20000 }).should('be.enabled').click()
+
+  // Esperar toast de éxito
+  cy.contains('Successfully Saved', { timeout: 30000 }).should('be.visible')
 })

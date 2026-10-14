@@ -18,5 +18,7 @@ describe('06 - Demo de TODOS los localizadores en Cypress', () => {
     cy.get('.oxd-table-body .oxd-table-card').first().nextAll().should('have.length.greaterThan', 0)
     cy.get('.oxd-table-body .oxd-table-card').last().prev().should('exist')
     cy.get('.oxd-table-body .oxd-table-card').last().prevAll().should('have.length.greaterThan', 0)
+
+    cy.screenshot('06-locators', { capture: 'viewport' })
   })
 })

@@ -9,6 +9,8 @@ module.exports = defineConfig({
     viewportHeight: 768,
     defaultCommandTimeout: 15000,
     pageLoadTimeout: 120000,
+    screenshotOnRunFailure: true,
+    video: false,
   },
   component: {
     supportFile: false,
